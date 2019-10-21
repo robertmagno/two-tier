@@ -21,7 +21,7 @@ spec:
              privileged: true
           env:
           - name: "EULA"
-          value: "yes"
+            value: "yes"
           - name: "KUBERNETES_TASK_ID"
             value: ""
           imagePullPolicy: Always
