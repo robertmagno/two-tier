@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: 2tier-cic
+  labels:
+    app: 2tier-cic
+spec:
+      serviceAccountName: cpx
+      containers:
+      - name: 2tier-cic
+        image: "quay.io/citrix/citrix-k8s-ingress-controller:1.1.3"
+        env:
+         # Set NetScaler NSIP/SNIP, SNIP in case of HA (mgmt has to be enabled)
+         - name: "NS_IP"
+           value: "10.217.101.193"
+         - name: "NS_ENABLE_MONITORING"
+           value: "NO"
+         - name: "NS_USER"
+           value: "nsroot"
+         - name: "NS_PASSWORD"
+           value: "nsroot"
+         - name: "EULA"
+           value: "yes"
+         - name: "LOGLEVEL"
+           value: "DEBUG"
+        args:
+          - --ingress-classes
+            vpx
+          - --feature-node-watch
+            false
+        imagePullPolicy: IfNotPresent

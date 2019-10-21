@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: apache-cpx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: apache-cpx
+      labels:
+        app: apache-cpx
+        app1: exporter
+      annotations:
+        NETSCALER_AS_APP: "True"
+    spec:
+      serviceAccountName: cpx
+      containers:
+        - name: apache-cpx
+          image: "quay.io/citrix/citrix-k8s-cpx-ingress:13.0-36.28"
+          securityContext:
+             privileged: true
+          env:
+          - name: "EULA"
+          value: "yes"
+          - name: "KUBERNETES_TASK_ID"
+            value: ""
+          imagePullPolicy: Always
+        # Add cic as a sidecar
+        - name: cic
+          image: "quay.io/citrix/citrix-k8s-ingress-controller:1.1.3"
+          env:
+          - name: "EULA"
+            value: "yes"
+          - name: "NS_IP"
+            value: "127.0.0.1"
+          - name: "NS_PROTOCOL"
+            value: "HTTP"
+          - name: "NS_PORT"
+            value: "80"
+          - name: "NS_DEPLOYMENT_MODE"
+            value: "SIDECAR"
+          - name: "NS_ENABLE_MONITORING"
+            value: "YES"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          args:
+            - --ingress-classes
+              cpx
+          imagePullPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-service-cpx
+  labels:
+    app: lb-service-cpx
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    protocol: TCP
+    name: http
+    targetPort: 80
+  selector:
+    app: apache-cpx

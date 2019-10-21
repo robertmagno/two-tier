@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: apache-ingress
+  annotations:
+   #ingress.citrix.com/insecure-service-type: "tcp"
+   #ingress.citrix.com/insecure-port: "80"
+   kubernetes.io/ingress.class: "cpx"
+spec:
+  backend:
+    serviceName: httpd-service
+    servicePort: 80

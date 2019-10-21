@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hello-world-ingress-vpx-2
+  annotations:
+   kubernetes.io/ingress.class: "vpx"
+   ingress.citrix.com/insecure-termination: "redirect"
+   # change the frontend-ip to the VIP you want to create
+   ingress.citrix.com/frontend-ip: "10.217.101.195"
+spec:
+  rules:
+  - host:  2tier.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: lb-service-cpx
+          servicePort: 80
