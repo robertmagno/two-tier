@@ -3,6 +3,9 @@ kind: Deployment
 metadata:
   name: apache-webserver
 spec:
+  selector:
+    matchLabels:
+      app: apache
   replicas: 8
   template:
     metadata:
