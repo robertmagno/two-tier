@@ -16,7 +16,7 @@ spec:
       serviceAccountName: cpx
       containers:
         - name: apache-cpx
-          image: "quay.io/citrix/citrix-k8s-cpx-ingress:13.0-36.28"
+          image: "quay.io/citrix/citrix-k8s-cpx-ingress:13.0-47.103"
           securityContext:
              privileged: true
           env:
